@@ -1,10 +1,10 @@
-const Suppliers = require('../models/Supplier')
+const Supplier = require('../models/Supplier')
 const bcrpyt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const suppliersController = {}
 
 suppliersController.register = async (req, res) => {
-    const newSupp = new Suppliers(req.body)
+    const newSupp = new Supplier(req.body)
 
     try {
         const savedSupp = await newSupp.save()
@@ -17,11 +17,11 @@ suppliersController.register = async (req, res) => {
 
 suppliersController.login = async (req, res) => {
     try {
-        const supplier = await Suppliers.findOne({ email: req.body.email })
+        const supplier = await Supplier.findOne({ email: req.body.email })
 
         if (!supplier) {
             res.json({
-                errors: 'Invalid Email ID or Password',
+                errors: 'Invalid Email ID or Password'
             })
         } else {
             bcrpyt.compare(req.body.password, supplier.password).then((match) => {
@@ -35,7 +35,7 @@ suppliersController.login = async (req, res) => {
                     res.json({ ...others, accessToken })
                 } else {
                     res.json({
-                        errors: 'Invalid Email ID or Password',
+                        errors: 'Invalid Email ID or Password'
                     })
                 }
             })
@@ -49,7 +49,7 @@ suppliersController.update = async (req, res) => {
     delete req.body.password
 
     try {
-        const updatedSupplier = await Suppliers.findByIdAndUpdate(
+        const updatedSupplier = await Supplier.findByIdAndUpdate(
             req.params.id,
             { $set: req.body },
             { new: true }
@@ -63,7 +63,7 @@ suppliersController.update = async (req, res) => {
 //DELETE
 suppliersController.destroy = async (req, res) => {
     try {
-        const deletedProduct = await Suppliers.findByIdAndDelete(req.params.id)
+        const deletedProduct = await Supplier.findByIdAndDelete(req.params.id)
         res.json(deletedProduct)
     } catch (err) {
         res.json(err)
@@ -73,7 +73,7 @@ suppliersController.destroy = async (req, res) => {
 //GET USER BY ID
 suppliersController.show = async (req, res) => {
     try {
-        const supp = await Suppliers.findById(req.params.id)
+        const supp = await Supplier.findById(req.params.id)
         const { password, ...others } = supp._doc
         res.json(others)
     } catch (err) {
